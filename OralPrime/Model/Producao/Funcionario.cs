@@ -194,7 +194,7 @@ namespace OralPrime.Model.Producao
         } //Fim ListarTodos
 
 
-
+        // Listar Por ID
         public static Funcionario? ListarPorId(int id)
         {
             string sql = "SELECT * FROM `tb_Funcionario` WHERE `id` = @Id";

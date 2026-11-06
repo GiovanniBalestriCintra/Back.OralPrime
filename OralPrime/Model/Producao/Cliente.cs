@@ -143,7 +143,7 @@ namespace OralPrime.Model.Producao
 
 
 
-
+        // Listar todos os clientes
         public static List<Cliente> ListarTodos()
         {
             string sql = "SELECT * FROM `tb_Cliente`";
@@ -196,6 +196,7 @@ namespace OralPrime.Model.Producao
 
 
 
+        // Listar cliente por ID
         public static Cliente? ListarPorId(int id)
         {
             string sql = "SELECT * FROM `tb_Cliente` WHERE `id` = @Id";
@@ -235,6 +236,7 @@ namespace OralPrime.Model.Producao
 
 
 
+        // Atualizar cliente
         public static int Atualizar(Cliente cliente)
         {
             string sql = "UPDATE `tb_Cliente` SET `Nome` = @Nome, `contato` = @Contato, `DDD` = @DDD, `telefone` = @Telefone, `endereco` = @Endereco, `bairro` = @Bairro, `cidade` = @Cidade, `estado` = @Estado, `CEP` = @CEP, `email` = @Email WHERE `Id` = @Id";
