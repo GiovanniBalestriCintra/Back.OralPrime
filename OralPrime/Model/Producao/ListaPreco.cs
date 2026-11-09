@@ -307,7 +307,7 @@ namespace OralPrime.Model.Producao
                     ListaPreco listaPreco = new ListaPreco(idLista, descricao, lista_1, lista_2, lista_3, lista_4, lista_5, lista_6, lista_7, lista_8, lista_9, lista_10, lista_11, lista_12, lista_13, lista_14, lista_15, lista_16, lista_17, lista_18, lista_19, lista_10);
                 }
 
-                return listarPrecos;
+                return listarPreco;
             }
         } // Fim ListarPorId
 

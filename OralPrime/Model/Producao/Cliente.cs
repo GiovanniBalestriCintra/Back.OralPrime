@@ -35,7 +35,7 @@ namespace OralPrime.Model.Producao
         public string Cidade { get => _cidade; set => _cidade = value; }
         public string Estado { get => _estado; set => _estado = value; }
         public string Cep { get => _cep; set => _cep = value; }
-        public string Email { get => __email; set => __email = value; }
+        public string Email { get => _email; set => _email = value; }
 
 
         // Método construtor sem ID.
@@ -50,7 +50,7 @@ namespace OralPrime.Model.Producao
             _cidade = cidade;
             _estado = estado;
             _cep = cep;
-            __email = email;
+            _email = email;
         }
 
         // Método construtor com ID.
@@ -66,7 +66,7 @@ namespace OralPrime.Model.Producao
             _cidade = cidade;
             _estado = estado;
             _cep = cep;
-            __email = email;
+            _email = email;
         }
 
 
