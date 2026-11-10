@@ -226,22 +226,21 @@ namespace OralPrime.Model.Financeiro
 
 
         // Atualizar boleto
-        public static int Atualizar(Boleto boleto)
+        public static int Atualizar(ContasAPagar conta)
         {
-            string sql = "UPDATE `tb_Boletos` SET `Data` = @Data, `NumDocumento` = @NumDocumento, `DtVencimento` = @DtVencimento, `Valor` = @Valor, `DtPagamento` = @DtPagamento, `ValorPago` = @ValorPago, `Observacao` = @Observacao, `Estado` = @Estado, `Final` = @Final WHERE `Id` = @Id";
+            string sql = "UPDATE `tb_ContasAPagar` SET `Data` = @Data, `DtVencimento` = @DtVencimento, `Valor` = @Valor, `DtPagamento` = @DtPagamento, `ValorPago` = @ValorPago, `Historico` = @Historico, `Final` = @Final WHERE `Id` = @Id";
 
             using (var cmd = new MySqlCommand(sql))
             {
 
                 // Vinculacão de paranetros: Protege contra SQL Injection e organiza os dados
-                cmd.Parameters.AddWithValue("@Data", boleto.Data);
-                cmd.Parameters.AddWithValue("@NumDocumento", boleto.NumDocumento);
-                cmd.Parameters.AddWithValue("@DtVencimento", boleto.DtVencimento);
-                cmd.Parameters.AddWithValue("@Valor", boleto.Valor);
-                cmd.Parameters.AddWithValue("@DtPagamento", boleto.DtPagamento);
-                cmd.Parameters.AddWithValue("@ValorPago", boleto.ValorPago);
-                cmd.Parameters.AddWithValue("@Observação", boleto.Observação);
-                cmd.Parameters.AddWithValue("@Final", boleto.Final);
+                cmd.Parameters.AddWithValue("@Data", conta.Data);
+                cmd.Parameters.AddWithValue("@DtVencimento", conta.DtVencimento);
+                cmd.Parameters.AddWithValue("@Valor", conta.Valor);
+                cmd.Parameters.AddWithValue("@DtPagamento", conta.DtPagamento);
+                cmd.Parameters.AddWithValue("@ValorPago", conta.ValorPago);
+                cmd.Parameters.AddWithValue("@Historico", conta.Historico);
+                cmd.Parameters.AddWithValue("@Final", conta.Final);
 
                 // Execução: 0 UPOATE tambén é uma instrução de ação (cono INSERT e DELETE).
                 // Ele vai retornar 1 (se encontrou o ID e atualizou con sucesso) ou 0 (se o ID nao existia).
@@ -251,15 +250,6 @@ namespace OralPrime.Model.Financeiro
         } // Fim Atualizar
 
 
+    } // Classe
 
-                
-
-
-
-
-
-
-
-
-    }
-}
+} // Namespace
