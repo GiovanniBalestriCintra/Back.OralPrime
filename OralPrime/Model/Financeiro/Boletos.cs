@@ -11,6 +11,7 @@ namespace OralPrime.Model.Financeiro
     internal class Boleto
     {
 
+        // Variáveis
         private int _id;
         private DateTime _data;
         private string _numDocumento;
@@ -59,14 +60,14 @@ namespace OralPrime.Model.Financeiro
         }
 
 
-        // Inserir Boleto
+        // Inserir
         public static int Inserir(Boleto boleto)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_Boletos` (`data`, `numDocumento`, `dtVencimento`, `valor`, `dtPagamento`, `valorPago`, `observacao`, `final`) VALUES (@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
+            string sql = "CALL sp_InserirBoleto(@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -94,15 +95,15 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Deletar Boleto
+        // Deletar
         public static int Deletar(Boleto boleto)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_Boletos` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarBoleto(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", boleto.Id);
+                cmd.Parameters.AddWithValue("@Id", boleto.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -135,10 +136,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar todos os Boletos
+        // Listar todos
         public static List<Boleto> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_Boletos`";
+            string sql = "CALL sp_ListarTodosBoletos()";
 
             List<Boleto> listaBoletos = new();
 
@@ -185,10 +186,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar Boleto por ID
+        // Listar por ID
         public static Boleto? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_Boletos` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdBoleto(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -202,7 +203,7 @@ namespace OralPrime.Model.Financeiro
                 {
 
                     // Extrai os dados da linha atual.
-                    int idListado = reader.GetInt32("id");
+                    int idLista = reader.GetInt32("id");
 
                     DateTime data = (DateTime)reader["Data"];
                     string numDocumento = ValidarCampo(reader["NumDocumento"]);
@@ -214,7 +215,7 @@ namespace OralPrime.Model.Financeiro
                     bool final = CampoPreenchido(reader["Final"]);
 
                     // Cria o objeto Cliente con os dados extraidos
-                    boleto = new Boleto(idListado, data, numDocumento, dtVencimento, valor, dtPagamento, valorPago, observacao, final);
+                    boleto = new Boleto(idLista, data, numDocumento, dtVencimento, valor, dtPagamento, valorPago, observacao, final);
                 }
 
                 return boleto;
@@ -223,10 +224,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Atualizar boleto
+        // Atualizar
         public static int Atualizar(Boleto boleto)
         {
-            string sql = "UPDATE `tb_Boleto` SET `Data` = @Data, `numDocumento` = @NumDocumento, `DtVencimento` = @DtVencimento, `Valor` = @Valor, `DtPagamento` = @DtPagamento, `ValorPago` = @ValorPago, `Observacao` = @Observacao, `Final` = @Final WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarBoleto(@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
 
             using (var cmd = new MySqlCommand(sql))
             {

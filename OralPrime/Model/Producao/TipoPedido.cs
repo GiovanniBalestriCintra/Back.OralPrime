@@ -31,14 +31,13 @@ namespace OralPrime.Model.Producao
 
 
         // Inserir TipoPedido
-
         public static int Inserir(TipoPedido tipoPedido)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_TipoPedido` (`nome`) VALUES (@Nome)";
+            string sql = "CALL sp_InserirTipoPedido(@Nome)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -63,11 +62,11 @@ namespace OralPrime.Model.Producao
         public static int Deletar(TipoPedido tipoPedido)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_TipoPedido` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarTipoPedido(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", tipoPedido.Id);
+                cmd.Parameters.AddWithValue("@Id", tipoPedido.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -97,7 +96,7 @@ namespace OralPrime.Model.Producao
         // Listar todos os Tipos de Pedido
         public static List<TipoPedido> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_TipoPedido`";
+            string sql = "CALL sp_ListarTodosTipoPedido()";
 
             List<TipoPedido> listaTiposPedido = new();
 
@@ -141,7 +140,7 @@ namespace OralPrime.Model.Producao
         // Listar tipo de pedido por ID
         public static TipoPedido? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_TipoPedido` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdTipoPedido(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -172,7 +171,7 @@ namespace OralPrime.Model.Producao
         // Atualizar TipoPedido
         public static int Atualizar(TipoPedido tipoPedido)
         {
-            string sql = "UPDATE `tb_TipoPedido` SET `Nome` = @Nome WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarTipoPedido(@Nome)";
 
             using (var cmd = new MySqlCommand(sql))
             {

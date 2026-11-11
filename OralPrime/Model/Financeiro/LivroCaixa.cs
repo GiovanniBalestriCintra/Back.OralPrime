@@ -47,7 +47,7 @@ namespace OralPrime.Model.Financeiro
             _saldo = saldo;
         }
 
-        // Inserir LivroCaixa
+        // Inserir
         public static int Inserir(LivroCaixa livroCaixa)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
@@ -78,7 +78,7 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Deletar LivroCaixa
+        // Deletar
         public static int Deletar(LivroCaixa livroCaixa)
         {
             // String SQL
@@ -86,7 +86,7 @@ namespace OralPrime.Model.Financeiro
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", livroCaixa.Id);
+                cmd.Parameters.AddWithValue("@Id", livroCaixa.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -216,7 +216,7 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Atualizar ListaCaixa
+        // Atualizar
         public static int Atualizar(LivroCaixa livroCaixa)
         {
             string sql = "CALL sp_AtualizarLivroCaixa(@Id)";
@@ -239,11 +239,6 @@ namespace OralPrime.Model.Financeiro
         } // Fim Atualizar
 
 
+    } // Classe
 
-
-
-
-
-
-    }
-}
+} // Namespace

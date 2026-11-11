@@ -70,14 +70,14 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Inserir Funcionário
+        // Inserir
         public static int Inserir(Funcionario funcionario)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_Funcionario` (`nome`, `DDD`, `telefone`, `endereco`, `bairro`, `cidade`, `estado`, `CEP`, `CPF`) VALUES (@Nome, @DDD, @Telefone, @Endereco, @Bairro, @Cidade, @Estado, @CEP, @CPF)";
+            string sql = "CALL sp_InserirFuncionario(@Nome, @DDD, @Telefone, @Endereco, @Bairro, @Cidade, @Estado, @CEP, @CPF)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -107,15 +107,15 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Deletar Funcionário
+        // Deletar
         public static int Deletar(Funcionario funcionario)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_Funcionario` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarFuncionario(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", funcionario.Id);
+                cmd.Parameters.AddWithValue("@Id", funcionario.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -143,10 +143,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Listar todos os funcionários
+        // Listar todos
         public static List<Funcionario> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_Funcionario`";
+            string sql = "CALL sp_ListarTodosFuncionario()";
 
             List<Funcionario> listaFuncionario = new();
 
@@ -197,7 +197,7 @@ namespace OralPrime.Model.Producao
         // Listar Por ID
         public static Funcionario? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_Funcionario` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdFuncionario(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -233,10 +233,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Atualizar funcionario
+        // Atualizar
         public static int Atualizar(Funcionario funcionario)
         {
-            string sql = "UPDATE `tb_Funcionario` SET `Nome` = @Nome, `DDD` = @DDD, `telefone` = @Telefone, `endereco` = @Endereco, `bairro` = @Bairro, `cidade` = @Cidade, `estado` = @Estado, `CEP` = @CEP, `CPF` = @CPF WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarFuncionario(@Nome, @DDD, @Telefone, @Endereco, @Bairro, @Cidade, @Estado, @CEP, @CPF)";
 
             using (var cmd = new MySqlCommand(sql))
             {

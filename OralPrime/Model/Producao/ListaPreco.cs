@@ -116,14 +116,14 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Inserir ListaPreço
+        // Inserir
         public static int Inserir(ListaPreco listaPreco)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_ListaPreco` (`descricao`, `lista_1`, `lista_2`, `lista_3`, `lista_4`, `lista_5`, `lista_6`, `lista_7`, `lista_8`, `lista_9`, `lista_10`, `lista_11`, `lista_12`, `lista_13`, `lista_14`, `lista_15`, `lista_16`, `lista_17`, `lista_18`, `lista_19`, `lista_20`,) VALUES (@Descricao, @Lista_1, @Lista_2, @Lista_3, @Lista_4, @Lista_5, @Lista_6, @Lista_7, @Lista_8, @Lista_9, @Lista_10, @Lista_11, @Lista_12, @Lista_13, @Lista_14, @Lista_15, @Lista_16, @Lista_17, @Lista_18, @Lista_19, @Lista_20, )";
+            string sql = "CALL sp_InserirListaPreco(@Descricao, @Lista_1, @Lista_2, @Lista_3, @Lista_4, @Lista_5, @Lista_6, @Lista_7, @Lista_8, @Lista_9, @Lista_10, @Lista_11, @Lista_12, @Lista_13, @Lista_14, @Lista_15, @Lista_16, @Lista_17, @Lista_18, @Lista_19, @Lista_20)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -163,15 +163,15 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Deletar ListaPreço
+        // Deletar
         public static int Deletar(ListaPreco listaPreco)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_ListaPreco` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarListaPreco(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", listaPreco.Id);
+                cmd.Parameters.AddWithValue("@Id", listaPreco.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -198,10 +198,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Listar todas as ListasPreço
+        // Listar todos
         public static List<ListaPreco> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_listaPreco`";
+            string sql = "CALL sp_ListarTodos()";
 
             List<ListaPreco> listarPrecos = new();
 
@@ -265,7 +265,7 @@ namespace OralPrime.Model.Producao
         // Listar Por ID
         public static ListaPreco? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_Listar` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdListaPreco(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -313,10 +313,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Atualizar funcionario
+        // Atualizar
         public static int Atualizar(ListaPreco listaPreco)
         {
-            string sql = "UPDATE `tb_ListarPreco` SET `descricao` = @Descricao, `lista_1` = @Lista_1, `lista_2` = @Lista_2, `lista_3` = @Lista_3, `lista_4` = @Lista_4, `lista_5` = @Lista_5, `lista_6` = @Lista_6, `lista_7` = @Lista_7, `lista_8` = @Lista_8, `lista_9` = @Lista_9, `lista_10` = @Lista_10, `lista_11` = @Lista_11, `lista_12` = @Lista_12, `lista_13` = @Lista_13, `lista_14` = @Lista_14, `lista_15` = @Lista_15, `lista_16` = @Lista_16, `lista_17` = @Lista_17, `lista_18` = @Lista_18, `lista_19` = @Lista_19, `lista_20` = @Lista_20 WHERE `Id` = @Id";
+            string sql = "@Descricao, @Lista_1, @Lista_2, @Lista_3, @Lista_4, @Lista_5, @Lista_6, @Lista_7, @Lista_8, @Lista_9, @Lista_10, @Lista_11, @Lista_12, @Lista_13, @Lista_14, @Lista_15, @Lista_16, @Lista_17, @Lista_18, @Lista_19, @Lista_20, ";
 
             using (var cmd = new MySqlCommand(sql))
             {

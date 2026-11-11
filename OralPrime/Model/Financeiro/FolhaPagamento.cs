@@ -10,6 +10,7 @@ namespace OralPrime.Model.Financeiro
     internal class FolhaPagamento
     {
 
+        // Variáveis
         private int _id;
         private DateTime _data;
         private string _nome;
@@ -25,6 +26,7 @@ namespace OralPrime.Model.Financeiro
         public decimal Saldo { get => _saldo; set => _saldo = value; }
 
 
+        // Método construtor sem ID
         public FolhaPagamento(DateTime data, string nome, string historico, decimal valor, decimal saldo)
         {
             _data = data;
@@ -34,6 +36,7 @@ namespace OralPrime.Model.Financeiro
             _saldo = saldo;
         }
 
+        // Método construtor com ID
         public FolhaPagamento(int id, DateTime data, string nome, string historico, decimal valor, decimal saldo)
         {
             _id = id;
@@ -46,14 +49,14 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Inserir Folha pagamento
+        // Inserir
         public static int Inserir(FolhaPagamento folhaPagamento)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_FolhaPagamento` (`data`, `nome`, `historico`, `valor`, `saldo`) VALUES (@Data, @Nome, @Historico, @Valor, @Saldo)";
+            string sql = "CALL sp_InserirFolhaPagamento(@Data, @Nome, @Historico, @Valor, @Saldo)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -77,15 +80,16 @@ namespace OralPrime.Model.Financeiro
         } // Fim Inserir
 
 
-        // Deletar Filha pagamento
+
+        // Deletar 
         public static int Deletar(FolhaPagamento folhaPagameto)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_FolhaPagamento` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarFolhaPagamento(@Id";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", folhaPagameto.Id);
+                cmd.Parameters.AddWithValue("@Id", folhaPagameto.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -119,10 +123,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar todos os Boletos
+        // Listar todos
         public static List<FolhaPagamento> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_FolhaPagamento`";
+            string sql = "CALL sp_ListarTodosFolhaPagamento()";
 
             List<FolhaPagamento> listaFolhaPagamento = new();
 
@@ -166,10 +170,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar Boleto por ID
+        // Listar por ID
         public static FolhaPagamento? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_FolhaPagamento` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdFolhaPagamento(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -201,10 +205,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Atualizar Contas a pagar
+        // Atualizar
         public static int Atualizar(FolhaPagamento folhaPagamento)
         {
-            string sql = "UPDATE `tb_FolhaPagamento` SET `Data` = @Data, `nome` = @Nome, `Historico` = @Historico, `Valor` = @Valor, `Saldo` = @Saldo WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarFilhaPagamento(@Data, @Nome, @Historico, @Valor, @Saldo)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -226,10 +230,6 @@ namespace OralPrime.Model.Financeiro
 
 
 
+    } // Classe
 
-
-
-
-
-    }
-}
+} // Namespace

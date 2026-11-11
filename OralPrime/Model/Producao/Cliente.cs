@@ -70,7 +70,7 @@ namespace OralPrime.Model.Producao
         }
 
 
-        // Inserir Cliente
+        // Inserir
         public static int Inserir(Cliente cliente)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
@@ -107,7 +107,7 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Deletar Cliente
+        // Deletar
         public static int Deletar(Cliente cliente)
         {
             // String SQL
@@ -124,7 +124,8 @@ namespace OralPrime.Model.Producao
 
 
 
-        private static string ValidarCampo(object campo)
+        // ValidarCampo string
+        private static string ValidarCampoString(object campo)
         {
 
             if (campo == DBNull.Value || campo == null)
@@ -138,11 +139,31 @@ namespace OralPrime.Model.Producao
             }
 
 
+        }
+
+
+        // ValidarCampo string char
+        private static char ValidarCampoChar(object campo)
+        {
+            if (campo == DBNull.Value || campo == null)
+            {
+                return '\0'; // caractere nulo
+            }
+            else
+            {
+                return Convert.ToChar(campo);
+            }
+        }
+
+
+        private static bool CampoPreenchido(object campo)
+        {
+            return campo != DBNull.Value && campo != null;
         } // Fim ValidarCampo
 
 
 
-        // Listar todos os clientes
+        // Listar todos
         public static List<Cliente> ListarTodos()
         {
             string sql = "CALL sp_ListarTodosClientes()";
@@ -195,7 +216,7 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Listar cliente por ID
+        // Listar por ID
         public static Cliente? ListarPorId(int id)
         {
             string sql = "CALL sp_ListarClientePorId(@Id)";
@@ -235,7 +256,7 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Atualizar cliente
+        // Atualizar
         public static int Atualizar(Cliente cliente)
         {
             

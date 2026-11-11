@@ -67,14 +67,14 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Inserir Funcionário
+        // Inserir
         public static int Inserir(Pedido pedido)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_pedido` (`nome`, `paciente`, `entrada`, `prevista`, `finalizado`, `escala`, `cor`, `total`) VALUES (@Nome, @Paciente, @entrada, @Prevista, @Finalizado, @Escala, @Cor, @Total)";
+            string sql = "CALL sp_InserirPedido(@Nome, @Paciente, @entrada, @Prevista, @Finalizado, @Escala, @Cor, @Total)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -103,15 +103,15 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Deletar Funcionário
+        // Deletar
         public static int Deletar(Pedido pedido)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_Pedido` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarPedido(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", pedido.Ficha);
+                cmd.Parameters.AddWithValue("@Id", pedido.Ficha);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -139,10 +139,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Listar todos os funcionários
+        // Listar todos
         public static List<Pedido> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_Pedido`";
+            string sql = "CALL sp_listarTodosPedido()";
 
             List<Pedido> listaPedido = new();
 
@@ -193,7 +193,7 @@ namespace OralPrime.Model.Producao
         // Listar Por ID
         public static Pedido? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_Pedido` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdPedido(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -228,10 +228,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Atualizar funcionario
+        // Atualizar
         public static int Atualizar(Pedido pedido)
         {
-            string sql = "UPDATE `tb_Pedido` SET `nome` = @Nome, `paciente` = @Paciente, `entrada` = @Entrada, `prevista` = @Prevista, `finalizado` = @Finalizado, `escala` = @Escala, `cor` = @Cor, `total` = @Total WHERE `Id` = @Id";
+            string sql = "@Nome, @Paciente, @entrada, @Prevista, @Finalizado, @Escala, @Cor, @Total";
 
             using (var cmd = new MySqlCommand(sql))
             {

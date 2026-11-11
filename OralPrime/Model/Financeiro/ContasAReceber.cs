@@ -10,6 +10,7 @@ namespace OralPrime.Model.Financeiro
     internal class ContasAReceber
     {
 
+        // Variáveis
         private int _id;
         private DateTime _data;
         private string _historico;
@@ -23,6 +24,7 @@ namespace OralPrime.Model.Financeiro
         public decimal Saldo { get => _saldo; set => _saldo = value; }
 
 
+        // Método construtor sme ID
         public ContasAReceber(DateTime data, string historico, decimal valor, decimal saldo)
         {
             _data = data;
@@ -31,6 +33,7 @@ namespace OralPrime.Model.Financeiro
             _saldo = saldo;
         }
 
+        // Método construtor com ID
         public ContasAReceber(int id, DateTime data, string historico, decimal valor, decimal saldo)
         {
             _id = id;
@@ -42,14 +45,14 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Inserir ContasAReceber
+        // Inserir
         public static int Inserir(ContasAReceber contasAReceber)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_ContasAReceber` (`data`, `historco`, `valor`, `saldo`) VALUES (@Data, @Historico, @Valor, @Saldo)";
+            string sql = "CALL sp_InserirContasAReceber(@Data, @Historico, @Valor, @Saldo)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -73,15 +76,15 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Deletar ContasAReceber
+        // Deletar
         public static int Deletar(ContasAReceber contasAReceber)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_Boletos` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarContasAReceber(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", contasAReceber.Id);
+                cmd.Parameters.AddWithValue("@Id", contasAReceber.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -116,10 +119,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar todos as ContasAReceber
+        // Listar todos
         public static List<ContasAReceber> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_ContasAReceber`";
+            string sql = "CALL sp_ListarTodosContasAReceber()";
 
             List<ContasAReceber> listaContasAReceber = new();
 
@@ -162,10 +165,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar ContasAReceber por ID
+        // Listar por ID
         public static ContasAReceber? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_ContasAReceber` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdContasAReceber(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -196,10 +199,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Atualizar ContasAReceber
+        // Atualizar
         public static int Atualizar(ContasAReceber contasAReceber)
         {
-            string sql = "UPDATE `tb_ContasAPagar` SET `Data` = @Data, `Historico` = @Historico, `Valor` = @Valor, `Saldo` = @Saldo WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarContaAReceber(@Data, @Historico, @Valor, @Saldo)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -219,9 +222,6 @@ namespace OralPrime.Model.Financeiro
 
 
 
-
-
-
-
     } // Classe
+
 } // Namespace

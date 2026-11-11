@@ -73,14 +73,14 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Inserir RoteiroBoy
+        // Inserir
         public static int Inserir(RoteiroBoy roteiroBoy)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_RoteiroBoy` (`data`, `nome`, `dtVisita`, `hora`, `historico`, `finalizado`, `bairro`, `cidade`, `estado`, `cep`) VALUES (@Data, @Nome, @DtVisita, @Hora, @Historico, @Finalizado, @Bairro, @Cidade, @Estado, @CEP)";
+            string sql = "CALL sp_InserirRoteiroBoy(@Data, @Nome, @DtVisita, @Hora, @Historico, @Finalizado, @Bairro, @Cidade, @Estado, @CEP)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -111,15 +111,15 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Deletar RoteioBoy
+        // Deletar
         public static int Deletar(RoteiroBoy roteiroBoy)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_RoteiroBoy` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarRoteiroBoy(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", roteiroBoy.Id);
+                cmd.Parameters.AddWithValue("@Id", roteiroBoy.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -129,7 +129,7 @@ namespace OralPrime.Model.Producao
 
 
 
-        // ValidarCampo: Verifica se o campo e nulo ou DBNull e retorna uma string vazia, caso contrario retorna o valor do campo convertido para string.
+        // ValidarCampo
         private static string ValidarCampo(object campo)
         {
 
@@ -147,10 +147,10 @@ namespace OralPrime.Model.Producao
         } // Fim ValidarCampo
 
 
-        // Listar todos os RoteirosBoy
+        // Listar todos 
         public static List<RoteiroBoy> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_RoteiroBoy`";
+            string sql = "CALL sp_ListarTodosRoteiroBoy()";
 
             List<RoteiroBoy> listaRoteiros = new();
 
@@ -201,10 +201,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Listar RoteiroBoy por ID
+        // Listar por ID
         public static RoteiroBoy? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_RoteiroBoy` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdRoteiroBoy(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -242,10 +242,10 @@ namespace OralPrime.Model.Producao
 
 
 
-        // Atualizar RoteiroBoy
+        // Atualizar
         public static int Atualizar(RoteiroBoy roteiroBoy)
         {
-            string sql = "UPDATE `tb_RoteiroBoy` SET `Data` = @Data, `Nome` = @Nome, `DtVisita` = @DtVisita, `Hora` = @Hora, `Historico` = @Historico, `Finalizado` = @Finalizado, `Bairro` = @Bairro, `Cidade` = @Cidade, `Estado` = @Estado, `Cep` = @Cep WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarRoteiroBoy(@Data, @Nome, @DtVisita, @Hora, @Historico, @Finalizado, @Bairro, @Cidade, @Estado, @CEP)";
 
             using (var cmd = new MySqlCommand(sql))
             {

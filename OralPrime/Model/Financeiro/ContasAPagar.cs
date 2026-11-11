@@ -60,14 +60,14 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Inserir Contas a Pagar
+        // Inserir
         public static int Inserir(ContasAPagar contasAPagar)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
             // O uso de marcações com '@' (ex: @Data) é uma prática de segurança crucial chamada de "Parametrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que é comando e o que é apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_ContasAPagar` (`data`, `dtVencimento`, `valor`, `dtPagamento`, `valorPago`, `historico`, `final`) VALUES (@Data, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Historico, @Final)";
+            string sql = "CALL sp_InserirContasAPagar(@Data, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Historico, @Final)";
 
             // Gerenciamento de recursos: Cria o objeto de comando já passando a instrução SQL.
             // O 'using' garante que os recursos de memória ocupados pelo comando sejam liberados ao final do bloco.
@@ -94,15 +94,15 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Deletar Contas a Pagar
+        // Deletar
         public static int Deletar(ContasAPagar contasAPagar)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_ContasAPagar` WHERE `ID` = @id";
+            string sql = "CALL sp_DeleteContasAPagar(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", contasAPagar.Id);
+                cmd.Parameters.AddWithValue("@Id", contasAPagar.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -134,10 +134,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar todas as Contas a Pagar
+        // Listar todos
         public static List<ContasAPagar> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_ContasAPagar`";
+            string sql = "CALL sp_ListarTodosContasAPagar()";
 
             List<ContasAPagar> listaContasAPagar = new();
 
@@ -183,10 +183,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar Conta a Pagar por ID
+        // Listar por ID
         public static ContasAPagar? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_ContasAPagar` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarPorIdContasAPagar(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -221,10 +221,10 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Atualizar Contas a Pagar
+        // Atualizar
         public static int Atualizar(ContasAPagar contasAPagar)
         {
-            string sql = "UPDATE `tb_ContasAPagar` SET `Data` = @Data, `DtVencimento` = @DtVencimento, `Valor` = @Valor, `DtPagamento` = @DtPagamento, `ValorPago` = @ValorPago, `Historico` = @Historico, `Final` = @Final WHERE `Id` = @Id";
+            string sql = "CALL sp_AtualizarContasAPagar(@Data, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Historico, @Final)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -248,4 +248,5 @@ namespace OralPrime.Model.Financeiro
 
 
     } // Classe
+
 } // Namespace

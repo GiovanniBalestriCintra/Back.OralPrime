@@ -11,6 +11,7 @@ namespace OralPrime.Model.Financeiro
     internal class Fornecedor
     {
 
+        // Variáveis
         private int _id;
         private string _nome;
         private string _contato;
@@ -34,6 +35,7 @@ namespace OralPrime.Model.Financeiro
         public string Cep { get => _cep; set => _cep = value; }
 
 
+        // Método construtor sem ID
         public Fornecedor(string nome, string contato, string ddd, string telefone, string endereco, string bairro, string cidade, string estado, string cep)
         {
             _nome = nome;
@@ -47,6 +49,7 @@ namespace OralPrime.Model.Financeiro
             _cep = cep;
         }
 
+        // Método construtor com ID
         public Fornecedor(int id, string nome, string contato, string ddd, string telefone, string endereco, string bairro, string cidade, string estado, string cep)
         {
             _id = id;
@@ -64,7 +67,7 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Inserir Fornecedor
+        // Inserir
         public static int Inserir(Fornecedor fornecedor)
         {
             // Instrução SQL: Define o comando de inserção (INSERT).
@@ -99,7 +102,7 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Deletar Fornecedor
+        // Deletar
         public static int Deletar(Fornecedor fornecedor)
         {
             // String SQL
@@ -139,7 +142,7 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar todos os clientes
+        // Listar todos
         public static List<Fornecedor> ListarTodos()
         {
             string sql = "CALL sp_ListarTodosFornecedor()";
@@ -191,7 +194,7 @@ namespace OralPrime.Model.Financeiro
 
 
 
-        // Listar cliente por ID
+        // Listar por ID
         public static Fornecedor? ListarPorId(int id)
         {
             string sql = "CALL sp_ListarFornecedorPorId(@Id)";
@@ -229,6 +232,7 @@ namespace OralPrime.Model.Financeiro
         } // Fim ListarPorId
 
 
+        // Atualizar
         public static int Atualizar(Fornecedor fornecedor)
         {
 
