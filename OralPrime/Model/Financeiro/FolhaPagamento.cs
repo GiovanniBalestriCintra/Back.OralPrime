@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySqlConnector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,227 @@ namespace OralPrime.Model.Financeiro
 {
     internal class FolhaPagamento
     {
+
+        private int _id;
+        private DateTime _data;
+        private string _nome;
+        private string _historico;
+        private decimal _valor;
+        private decimal _saldo;
+
+        public int Id { get => _id; set => _id = value; }
+        public DateTime Data { get => _data; set => _data = value; }
+        public string Nome { get => _nome; set => _nome = value; }
+        public string Historico { get => _historico; set => _historico = value; }
+        public decimal Valor { get => _valor; set => _valor = value; }
+        public decimal Saldo { get => _saldo; set => _saldo = value; }
+
+
+        public FolhaPagamento(DateTime data, string nome, string historico, decimal valor, decimal saldo)
+        {
+            _data = data;
+            _nome = nome;
+            _historico = historico;
+            _valor = valor;
+            _saldo = saldo;
+        }
+
+        public FolhaPagamento(int id, DateTime data, string nome, string historico, decimal valor, decimal saldo)
+        {
+            _id = id;
+            _data = data;
+            _nome = nome;
+            _historico = historico;
+            _valor = valor;
+            _saldo = saldo;
+        }
+
+
+
+        // Inserir Folha pagamento
+        public static int Inserir(FolhaPagamento folhaPagamento)
+        {
+            // Instrução SQL: Define o comando de inserção (INSERT).
+            // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
+            // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
+
+            string sql = "INSERT INTO `tb_FolhaPagamento` (`data`, `nome`, `historico`, `valor`, `saldo`) VALUES (@Data, @Nome, @Historico, @Valor, @Saldo)";
+
+            // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
+            // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
+            using (var cmd = new MySqlCommand(sql))
+            {
+                // Vinculação de Dados: Pega as propriedades do objeto C# (cliente.Nome, cliente.cpf, etc.)
+                // e substitui de forna segura as narcacões '0' da string SQL com os valores reais,
+
+                cmd.Parameters.AddWithValue("@Data", folhaPagamento.Data);
+                cmd.Parameters.AddWithValue("@Nome", folhaPagamento.Nome);
+                cmd.Parameters.AddWithValue("@Historico", folhaPagamento.Historico);
+                cmd.Parameters.AddWithValue("@Valor", folhaPagamento.Valor);
+                cmd.Parameters.AddWithValue("@Saldo", folhaPagamento.Saldo);
+
+                // Execucão: Como o comando de INSERT nao retorna tabelas (apenas executa una ação),
+                // ele envia o comando configurado para o metodo generico 'executarComando' da classe 'Banco'.
+                // O metodo retorna 1 (se o usuario for inserido con sucesso) ou -1 (se houver erro no banco).
+
+                return Banco.ExecutarComando(cmd);
+            }
+        } // Fim Inserir
+
+
+        // Deletar Filha pagamento
+        public static int Deletar(FolhaPagamento folhaPagameto)
+        {
+            // String SQL
+            string sql = "DELETE FROM `tb_FolhaPagamento` WHERE `ID` = @id";
+
+            using (var cmd = new MySqlCommand(sql))
+            {
+                cmd.Parameters.AddWithValue("@id", folhaPagameto.Id);
+
+                return Banco.ExecutarComando(cmd);
+            }
+
+        } // Fim Deletar
+
+
+
+        // ValidarCampo
+        private static string ValidarCampo(object campo)
+        {
+
+            if (campo == DBNull.Value || campo == null)
+            {
+                return "";
+            }
+            else
+            {
+                return campo.ToString();
+
+            }
+
+
+        }
+
+        private static bool CampoPreenchido(object campo)
+        {
+            return campo != DBNull.Value && campo != null;
+        } // Fim ValidarCampo
+
+
+
+
+        // Listar todos os Boletos
+        public static List<FolhaPagamento> ListarTodos()
+        {
+            string sql = "SELECT * FROM `tb_FolhaPagamento`";
+
+            List<FolhaPagamento> listaFolhaPagamento = new();
+
+            using (var cmd = new MySqlCommand(sql))
+            {
+
+                // Executa a leitura. 0 bloco 'using' aqui e FUNDAMENTAL para garantir que o
+                // reader seja fechado no final, o que por sua vez fecha a conexao com o banco.
+                using (MySqlDataReader reader = Banco.ExecutarComRetornoDeDados(cmd))
+                {
+
+                    // O while vai rodar uma vez para CADA Linha que existir na tabela Cliente
+                    while (reader.Read())
+                    {
+
+                        // Extrai os dados da linha atual.
+                        int id = reader.GetInt32("id");
+
+                        DateTime data = (DateTime)reader["Data"];
+                        string nome = ValidarCampo(reader["Nome"]);
+                        string historico = ValidarCampo(reader["Historico"]);
+                        decimal valor = reader.GetDecimal("Valor");
+                        decimal saldo = reader.GetDecimal("Saldo");
+
+                        // Cria o objeto Cliente con os dados extraidos
+                        FolhaPagamento folhaPagamento = new FolhaPagamento(id, data, nome, historico, valor, saldo);
+
+                        // Adiciona este boleto à nossa lista
+                        listaFolhaPagamento.Add(folhaPagamento);
+
+                    }
+
+                }
+
+                // Retorna a lista completa (se a tabela estiver vazia, retorna uma lista con 0 itens)
+                return listaFolhaPagamento;
+
+            }
+
+        } //Fim ListarTodos
+
+
+
+        // Listar Boleto por ID
+        public static FolhaPagamento? ListarPorId(int id)
+        {
+            string sql = "SELECT * FROM `tb_FolhaPagamento` WHERE `id` = @Id";
+
+            using (var cmd = new MySqlCommand(sql))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                MySqlDataReader reader = Banco.ExecutarComRetornoDeDados(cmd);
+
+                FolhaPagamento folhaPagamento = null;
+
+                while (reader.Read())
+                {
+
+                    // Extrai os dados da linha atual.
+                    int idListado = reader.GetInt32("id");
+
+                    DateTime data = (DateTime)reader["Data"];
+                    string nome = ValidarCampo(reader["Nome"]);
+                    string historico = ValidarCampo(reader["Historico"]);
+                    decimal valor = reader.GetDecimal("Valor");
+                    decimal saldo = reader.GetDecimal("Saldo");
+
+                    // Cria o objeto Cliente con os dados extraidos
+                    folhaPagamento = new FolhaPagamento(id, data, nome, historico, valor, saldo);
+                }
+
+                return folhaPagamento;
+            }
+        } // Fim ListarPorId
+
+
+
+        // Atualizar Contas a pagar
+        public static int Atualizar(FolhaPagamento folhaPagamento)
+        {
+            string sql = "UPDATE `tb_FolhaPagamento` SET `Data` = @Data, `nome` = @Nome, `Historico` = @Historico, `Valor` = @Valor, `Saldo` = @Saldo WHERE `Id` = @Id";
+
+            using (var cmd = new MySqlCommand(sql))
+            {
+
+                // Vinculacão de paranetros: Protege contra SQL Injection e organiza os dados
+                cmd.Parameters.AddWithValue("@Data", folhaPagamento.Data);
+                cmd.Parameters.AddWithValue("@Nome", folhaPagamento.Nome);
+                cmd.Parameters.AddWithValue("@Historico", folhaPagamento.Historico);
+                cmd.Parameters.AddWithValue("@Valor", folhaPagamento.Valor);
+                cmd.Parameters.AddWithValue("@Saldo", folhaPagamento.Saldo);
+
+
+                // Execução: 0 UPOATE tambén é uma instrução de ação (cono INSERT e DELETE).
+                // Ele vai retornar 1 (se encontrou o ID e atualizou con sucesso) ou 0 (se o ID nao existia).
+                return Banco.ExecutarComando(cmd);
+
+            }
+        } // Fim Atualizar
+
+
+
+
+
+
+
+
     }
 }

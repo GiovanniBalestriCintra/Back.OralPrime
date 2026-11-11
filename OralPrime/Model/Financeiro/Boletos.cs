@@ -18,7 +18,7 @@ namespace OralPrime.Model.Financeiro
         private decimal _valor;
         private DateTime _dtPagamento;
         private decimal _valorPago;
-        private string _observação;
+        private string _observacao;
         private bool _final;
 
         public int Id { get => _id; set => _id = value; }
@@ -28,11 +28,11 @@ namespace OralPrime.Model.Financeiro
         public decimal Valor { get => _valor; set => _valor = value; }
         public DateTime DtPagamento { get => _dtPagamento; set => _dtPagamento = value; }
         public decimal ValorPago { get => _valorPago; set => _valorPago = value; }
-        public string Observação { get => _observação; set => _observação = value; }
+        public string Observacao { get => _observacao; set => _observacao = value; }
         public bool Final { get => _final; set => _final = value; }
 
         // Método construtor com ID
-        public Boleto(int id, DateTime data, string numDocumento, DateTime dtVencimento, decimal valor, DateTime dtPagamento, decimal valorPago, string observação, bool final)
+        public Boleto(int id, DateTime data, string numDocumento, DateTime dtVencimento, decimal valor, DateTime dtPagamento, decimal valorPago, string observacao, bool final)
         {
             _id = id;
             _data = data;
@@ -41,12 +41,12 @@ namespace OralPrime.Model.Financeiro
             _valor = valor;
             _dtPagamento = dtPagamento;
             _valorPago = valorPago;
-            _observação = observação;
+            _observacao = observacao;
             _final = final;
         }
 
         // Método construtor sem ID
-        public Boleto(DateTime data, string numDocumento, DateTime dtVencimento, decimal valor, DateTime dtPagamento, decimal valorPago, string observação, bool final)
+        public Boleto(DateTime data, string numDocumento, DateTime dtVencimento, decimal valor, DateTime dtPagamento, decimal valorPago, string observacao, bool final)
         {
             _data = data;
             _numDocumento = numDocumento;
@@ -54,7 +54,7 @@ namespace OralPrime.Model.Financeiro
             _valor = valor;
             _dtPagamento = dtPagamento;
             _valorPago = valorPago;
-            _observação = observação;
+            _observacao = observacao;
             _final = final;
         }
 
@@ -66,7 +66,7 @@ namespace OralPrime.Model.Financeiro
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_Boletos` (`data`, `numDocumento`, `dtVencimento`, `valor`, `dtPagamento`, `valorPago`, `observação`, `final`) VALUES (@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observação, @Final)";
+            string sql = "INSERT INTO `tb_Boletos` (`data`, `numDocumento`, `dtVencimento`, `valor`, `dtPagamento`, `valorPago`, `observacao`, `final`) VALUES (@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
@@ -81,7 +81,7 @@ namespace OralPrime.Model.Financeiro
                 cmd.Parameters.AddWithValue("@Valor", boleto.Valor);
                 cmd.Parameters.AddWithValue("@DtPagamento", boleto.DtPagamento);
                 cmd.Parameters.AddWithValue("@ValorPago", boleto.ValorPago);
-                cmd.Parameters.AddWithValue("@Observação", boleto.Observação);
+                cmd.Parameters.AddWithValue("@Observação", boleto.Observacao);
                 cmd.Parameters.AddWithValue("@Final", boleto.Final);
 
                 // Execucão: Como o comando de INSERT nao retorna tabelas (apenas executa una ação),
@@ -164,7 +164,6 @@ namespace OralPrime.Model.Financeiro
                         DateTime dtPagamento = (DateTime)reader["DtPagamento"];
                         decimal valorPago = reader.GetDecimal("ValorPago");
                         string observacao = ValidarCampo(reader["Observacao"]);
-                        string estado = ValidarCampo(reader["Estado"]);
                         bool final = CampoPreenchido(reader["Final"]);
 
                         // Cria o objeto Cliente con os dados extraidos
@@ -212,7 +211,6 @@ namespace OralPrime.Model.Financeiro
                     DateTime dtPagamento = (DateTime)reader["DtPagamento"];
                     decimal valorPago = reader.GetDecimal("ValorPago");
                     string observacao = ValidarCampo(reader["Observacao"]);
-                    string estado = ValidarCampo(reader["Estado"]);
                     bool final = CampoPreenchido(reader["Final"]);
 
                     // Cria o objeto Cliente con os dados extraidos
@@ -226,21 +224,22 @@ namespace OralPrime.Model.Financeiro
 
 
         // Atualizar boleto
-        public static int Atualizar(ContasAPagar conta)
+        public static int Atualizar(Boleto boleto)
         {
-            string sql = "UPDATE `tb_ContasAPagar` SET `Data` = @Data, `DtVencimento` = @DtVencimento, `Valor` = @Valor, `DtPagamento` = @DtPagamento, `ValorPago` = @ValorPago, `Historico` = @Historico, `Final` = @Final WHERE `Id` = @Id";
+            string sql = "UPDATE `tb_Boleto` SET `Data` = @Data, `numDocumento` = @NumDocumento, `DtVencimento` = @DtVencimento, `Valor` = @Valor, `DtPagamento` = @DtPagamento, `ValorPago` = @ValorPago, `Observacao` = @Observacao, `Final` = @Final WHERE `Id` = @Id";
 
             using (var cmd = new MySqlCommand(sql))
             {
 
                 // Vinculacão de paranetros: Protege contra SQL Injection e organiza os dados
-                cmd.Parameters.AddWithValue("@Data", conta.Data);
-                cmd.Parameters.AddWithValue("@DtVencimento", conta.DtVencimento);
-                cmd.Parameters.AddWithValue("@Valor", conta.Valor);
-                cmd.Parameters.AddWithValue("@DtPagamento", conta.DtPagamento);
-                cmd.Parameters.AddWithValue("@ValorPago", conta.ValorPago);
-                cmd.Parameters.AddWithValue("@Historico", conta.Historico);
-                cmd.Parameters.AddWithValue("@Final", conta.Final);
+                cmd.Parameters.AddWithValue("@Data", boleto.Data);
+                cmd.Parameters.AddWithValue("@NumDocumento", boleto.NumDocumento);
+                cmd.Parameters.AddWithValue("@DtVencimento", boleto.DtVencimento);
+                cmd.Parameters.AddWithValue("@Valor", boleto.Valor);
+                cmd.Parameters.AddWithValue("@DtPagamento", boleto.DtPagamento);
+                cmd.Parameters.AddWithValue("@ValorPago", boleto.ValorPago);
+                cmd.Parameters.AddWithValue("@Historico", boleto.Observacao);
+                cmd.Parameters.AddWithValue("@Final", boleto.Final);
 
                 // Execução: 0 UPOATE tambén é uma instrução de ação (cono INSERT e DELETE).
                 // Ele vai retornar 1 (se encontrou o ID e atualizou con sucesso) ou 0 (se o ID nao existia).

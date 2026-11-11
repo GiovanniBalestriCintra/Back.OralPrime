@@ -77,8 +77,7 @@ namespace OralPrime.Model.Producao
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_Cliente` (`nome`, `contato`, `DDD`, `telefone`, `endereco`, `bairro`, `cidade`, `estado`, `CEP`, `email`) VALUES (@Nome, @Contato, @DDD, @Telefone, @Endereco, @Bairro, @Cidade, @Estado, @CEP, @Email)";
-
+            string sql = "CALL sp_InserirCliente(@Nome, @Contato, @DDD, @Telefone, @Endereco, @Bairro, @Cidade, @Estado, @CEP, @Email)";
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
             using (var cmd = new MySqlCommand(sql))
@@ -112,11 +111,11 @@ namespace OralPrime.Model.Producao
         public static int Deletar(Cliente cliente)
         {
             // String SQL
-            string sql = "DELETE FROM `tb_Cliente` WHERE `ID` = @id";
+            string sql = "CALL sp_DeletarCliente(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-                cmd.Parameters.AddWithValue("@id", cliente.Id);
+                cmd.Parameters.AddWithValue("@Id", cliente.Id);
 
                 return Banco.ExecutarComando(cmd);
             }
@@ -146,7 +145,7 @@ namespace OralPrime.Model.Producao
         // Listar todos os clientes
         public static List<Cliente> ListarTodos()
         {
-            string sql = "SELECT * FROM `tb_Cliente`";
+            string sql = "CALL sp_ListarTodosClientes()";
 
             List<Cliente> listaClientes = new();
 
@@ -199,7 +198,7 @@ namespace OralPrime.Model.Producao
         // Listar cliente por ID
         public static Cliente? ListarPorId(int id)
         {
-            string sql = "SELECT * FROM `tb_Cliente` WHERE `id` = @Id";
+            string sql = "CALL sp_ListarClientePorId(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
             {
@@ -239,8 +238,8 @@ namespace OralPrime.Model.Producao
         // Atualizar cliente
         public static int Atualizar(Cliente cliente)
         {
-            string sql = "UPDATE `tb_Cliente` SET `Nome` = @Nome, `contato` = @Contato, `DDD` = @DDD, `telefone` = @Telefone, `endereco` = @Endereco, `bairro` = @Bairro, `cidade` = @Cidade, `estado` = @Estado, `CEP` = @CEP, `email` = @Email WHERE `Id` = @Id";
-
+            
+            string sql = "CALL sp_AtualizarCliente(@Id, @Nome, @Contato, @DDD, @Telefone, @Endereco, @Bairro, @Cidade, @Estado, @CEP, @Email)";
             using (var cmd = new MySqlCommand(sql))
             {
 
