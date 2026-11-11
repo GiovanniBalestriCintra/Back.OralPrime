@@ -233,6 +233,7 @@ namespace OralPrime.Model.Financeiro
 
                 // Vinculacão de paranetros: Protege contra SQL Injection e organiza os dados
                 cmd.Parameters.AddWithValue("@Data", boleto.Data);
+                cmd.Parameters.AddWithValue("@NumDocumento", boleto.NumDocumento);
                 cmd.Parameters.AddWithValue("@DtVencimento", boleto.DtVencimento);
                 cmd.Parameters.AddWithValue("@Valor", boleto.Valor);
                 cmd.Parameters.AddWithValue("@DtPagamento", boleto.DtPagamento);
