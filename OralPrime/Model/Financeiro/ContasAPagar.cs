@@ -64,7 +64,7 @@ namespace OralPrime.Model.Financeiro
             // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
             // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
 
-            string sql = "INSERT INTO `tb_ContasAPagar` (`data`, `dtVencimento`, `valor`, `dtPagamento`, `valorPago`, `historico`, `final`) VALUES (@Data, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
+            string sql = "INSERT INTO `tb_ContasAPagar` (`data`, `dtVencimento`, `valor`, `dtPagamento`, `valorPago`, `historico`, `final`) VALUES (@Data, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Historico, @Final)";
 
             // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
             // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
