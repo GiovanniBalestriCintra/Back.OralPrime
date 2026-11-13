@@ -1,4 +1,5 @@
-﻿using MySqlConnector;
+﻿
+using MySqlConnector;
 using OralPrime.Model.Producao;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,10 @@ namespace OralPrime.Model.Financeiro
 {
     internal class Boleto
     {
-
         // Variáveis
         private int _id;
         private DateTime _data;
+        private int _clienteId;
         private string _numDocumento;
         private DateTime _dtVencimento;
         private decimal _valor;
@@ -24,6 +25,7 @@ namespace OralPrime.Model.Financeiro
 
         public int Id { get => _id; set => _id = value; }
         public DateTime Data { get => _data; set => _data = value; }
+        public int ClienteId { get => _clienteId; set => _clienteId = value; }
         public string NumDocumento { get => _numDocumento; set => _numDocumento = value; }
         public DateTime DtVencimento { get => _dtVencimento; set => _dtVencimento = value; }
         public decimal Valor { get => _valor; set => _valor = value; }
@@ -32,11 +34,14 @@ namespace OralPrime.Model.Financeiro
         public string Observacao { get => _observacao; set => _observacao = value; }
         public bool Final { get => _final; set => _final = value; }
 
-        // Método construtor com ID
-        public Boleto(int id, DateTime data, string numDocumento, DateTime dtVencimento, decimal valor, DateTime dtPagamento, decimal valorPago, string observacao, bool final)
+        // Construtor com ID
+        public Boleto(int id, DateTime data, int clienteId, string numDocumento,
+            DateTime dtVencimento, decimal valor, DateTime dtPagamento,
+            decimal valorPago, string observacao, bool final)
         {
             _id = id;
             _data = data;
+            _clienteId = clienteId;
             _numDocumento = numDocumento;
             _dtVencimento = dtVencimento;
             _valor = valor;
@@ -46,10 +51,13 @@ namespace OralPrime.Model.Financeiro
             _final = final;
         }
 
-        // Método construtor sem ID
-        public Boleto(DateTime data, string numDocumento, DateTime dtVencimento, decimal valor, DateTime dtPagamento, decimal valorPago, string observacao, bool final)
+        // Construtor sem ID
+        public Boleto(DateTime data, int clienteId, string numDocumento,
+            DateTime dtVencimento, decimal valor, DateTime dtPagamento,
+            decimal valorPago, string observacao, bool final)
         {
             _data = data;
+            _clienteId = clienteId;
             _numDocumento = numDocumento;
             _dtVencimento = dtVencimento;
             _valor = valor;
@@ -58,47 +66,31 @@ namespace OralPrime.Model.Financeiro
             _observacao = observacao;
             _final = final;
         }
-
 
         // Inserir
         public static int Inserir(Boleto boleto)
         {
-            // Instrução SQL: Define o comando de inserção (INSERT).
-            // 0 uso de marcações com '0' (ex: ONone) é una pratica de segurança crucial chanada de "Paranetrização".
-            // Ela impede ataques de SQL Injection, pois o banco entende o que e comando e o que e apenas texto do usuário.
+            string sql = "CALL sp_InserirBoleto(@Data, @ClienteId, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
 
-            string sql = "CALL sp_InserirBoleto(@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
-
-            // Gerenciamento de recursos: Cria o objeto de comando ja passando a instrução SQL.
-            // 0 'using' garante que os recursos de nemoria ocupados pelo comando sejam Liberados ao final do bloco.
             using (var cmd = new MySqlCommand(sql))
             {
-                // Vinculação de Dados: Pega as propriedades do objeto C# (cliente.Nome, cliente.cpf, etc.)
-                // e substitui de forna segura as narcacões '0' da string SQL com os valores reais,
-
                 cmd.Parameters.AddWithValue("@Data", boleto.Data);
+                cmd.Parameters.AddWithValue("@ClienteId", boleto.ClienteId);
                 cmd.Parameters.AddWithValue("@NumDocumento", boleto.NumDocumento);
                 cmd.Parameters.AddWithValue("@DtVencimento", boleto.DtVencimento);
                 cmd.Parameters.AddWithValue("@Valor", boleto.Valor);
                 cmd.Parameters.AddWithValue("@DtPagamento", boleto.DtPagamento);
                 cmd.Parameters.AddWithValue("@ValorPago", boleto.ValorPago);
-                cmd.Parameters.AddWithValue("@Observação", boleto.Observacao);
+                cmd.Parameters.AddWithValue("@Observacao", boleto.Observacao);
                 cmd.Parameters.AddWithValue("@Final", boleto.Final);
-
-                // Execucão: Como o comando de INSERT nao retorna tabelas (apenas executa una ação),
-                // ele envia o comando configurado para o metodo generico 'executarComando' da classe 'Banco'.
-                // O metodo retorna 1 (se o usuario for inserido con sucesso) ou -1 (se houver erro no banco).
 
                 return Banco.ExecutarComando(cmd);
             }
-        } // Fim Inserir
-
-
+        }
 
         // Deletar
         public static int Deletar(Boleto boleto)
         {
-            // String SQL
             string sql = "CALL sp_DeletarBoleto(@Id)";
 
             using (var cmd = new MySqlCommand(sql))
@@ -107,15 +99,11 @@ namespace OralPrime.Model.Financeiro
 
                 return Banco.ExecutarComando(cmd);
             }
-
-        } // Fim Deletar
-
-
+        }
 
         // ValidarCampo
         private static string ValidarCampo(object campo)
         {
-
             if (campo == DBNull.Value || campo == null)
             {
                 return "";
@@ -123,18 +111,13 @@ namespace OralPrime.Model.Financeiro
             else
             {
                 return campo.ToString();
-
             }
-
-
         }
 
         private static bool CampoPreenchido(object campo)
         {
             return campo != DBNull.Value && campo != null;
-        } // Fim ValidarCampo
-
-
+        }
 
         // Listar todos
         public static List<Boleto> ListarTodos()
@@ -145,20 +128,14 @@ namespace OralPrime.Model.Financeiro
 
             using (var cmd = new MySqlCommand(sql))
             {
-
-                // Executa a leitura. 0 bloco 'using' aqui e FUNDAMENTAL para garantir que o
-                // reader seja fechado no final, o que por sua vez fecha a conexao com o banco.
                 using (MySqlDataReader reader = Banco.ExecutarComRetornoDeDados(cmd))
                 {
-
-                    // O while vai rodar uma vez para CADA Linha que existir na tabela Cliente
                     while (reader.Read())
                     {
-
-                        // Extrai os dados da linha atual.
                         int id = reader.GetInt32("id");
 
                         DateTime data = (DateTime)reader["Data"];
+                        int clienteId = reader.GetInt32("ClienteId");
                         string numDocumento = ValidarCampo(reader["NumDocumento"]);
                         DateTime dtVencimento = (DateTime)reader["DtVencimento"];
                         decimal valor = reader.GetDecimal("Valor");
@@ -167,24 +144,19 @@ namespace OralPrime.Model.Financeiro
                         string observacao = ValidarCampo(reader["Observacao"]);
                         bool final = CampoPreenchido(reader["Final"]);
 
-                        // Cria o objeto Cliente con os dados extraidos
-                        Boleto boleto = new Boleto(id, data, numDocumento, dtVencimento, valor, dtPagamento, valorPago, observacao, final);
+                        Boleto boleto = new Boleto(
+                            id, data, clienteId, numDocumento,
+                            dtVencimento, valor, dtPagamento,
+                            valorPago, observacao, final
+                        );
 
-                        // Adiciona este boleto à nossa lista
                         listaBoletos.Add(boleto);
-
                     }
-
                 }
 
-                // Retorna a lista completa (se a tabela estiver vazia, retorna uma lista con 0 itens)
                 return listaBoletos;
-
             }
-
-        } //Fim ListarTodos
-
-
+        }
 
         // Listar por ID
         public static Boleto? ListarPorId(int id)
@@ -195,61 +167,57 @@ namespace OralPrime.Model.Financeiro
             {
                 cmd.Parameters.AddWithValue("@Id", id);
 
-                MySqlDataReader reader = Banco.ExecutarComRetornoDeDados(cmd);
-
-                Boleto boleto = null;
-
-                while (reader.Read())
+                using (MySqlDataReader reader = Banco.ExecutarComRetornoDeDados(cmd))
                 {
+                    Boleto boleto = null;
 
-                    // Extrai os dados da linha atual.
-                    int idLista = reader.GetInt32("id");
+                    while (reader.Read())
+                    {
+                        int idLista = reader.GetInt32("id");
 
-                    DateTime data = (DateTime)reader["Data"];
-                    string numDocumento = ValidarCampo(reader["NumDocumento"]);
-                    DateTime dtVencimento = (DateTime)reader["DtVencimento"];
-                    decimal valor = reader.GetDecimal("Valor");
-                    DateTime dtPagamento = (DateTime)reader["DtPagamento"];
-                    decimal valorPago = reader.GetDecimal("ValorPago");
-                    string observacao = ValidarCampo(reader["Observacao"]);
-                    bool final = CampoPreenchido(reader["Final"]);
+                        DateTime data = (DateTime)reader["Data"];
+                        int clienteId = reader.GetInt32("ClienteId");
+                        string numDocumento = ValidarCampo(reader["NumDocumento"]);
+                        DateTime dtVencimento = (DateTime)reader["DtVencimento"];
+                        decimal valor = reader.GetDecimal("Valor");
+                        DateTime dtPagamento = (DateTime)reader["DtPagamento"];
+                        decimal valorPago = reader.GetDecimal("ValorPago");
+                        string observacao = ValidarCampo(reader["Observacao"]);
+                        bool final = CampoPreenchido(reader["Final"]);
 
-                    // Cria o objeto Cliente con os dados extraidos
-                    boleto = new Boleto(idLista, data, numDocumento, dtVencimento, valor, dtPagamento, valorPago, observacao, final);
+                        boleto = new Boleto(
+                            idLista, data, clienteId, numDocumento,
+                            dtVencimento, valor, dtPagamento,
+                            valorPago, observacao, final
+                        );
+                    }
+
+                    return boleto;
                 }
-
-                return boleto;
             }
-        } // Fim ListarPorId
-
-
+        }
 
         // Atualizar
         public static int Atualizar(Boleto boleto)
         {
-            string sql = "CALL sp_AtualizarBoleto(@Data, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
+            string sql = "CALL sp_AtualizarBoleto(@Id, @Data, @ClienteId, @NumDocumento, @DtVencimento, @Valor, @DtPagamento, @ValorPago, @Observacao, @Final)";
 
             using (var cmd = new MySqlCommand(sql))
             {
-
-                // Vinculacão de paranetros: Protege contra SQL Injection e organiza os dados
+                cmd.Parameters.AddWithValue("@Id", boleto.Id);
                 cmd.Parameters.AddWithValue("@Data", boleto.Data);
+                cmd.Parameters.AddWithValue("@ClienteId", boleto.ClienteId);
                 cmd.Parameters.AddWithValue("@NumDocumento", boleto.NumDocumento);
                 cmd.Parameters.AddWithValue("@DtVencimento", boleto.DtVencimento);
                 cmd.Parameters.AddWithValue("@Valor", boleto.Valor);
                 cmd.Parameters.AddWithValue("@DtPagamento", boleto.DtPagamento);
                 cmd.Parameters.AddWithValue("@ValorPago", boleto.ValorPago);
-                cmd.Parameters.AddWithValue("@Historico", boleto.Observacao);
+                cmd.Parameters.AddWithValue("@Observacao", boleto.Observacao);
                 cmd.Parameters.AddWithValue("@Final", boleto.Final);
 
-                // Execução: 0 UPOATE tambén é uma instrução de ação (cono INSERT e DELETE).
-                // Ele vai retornar 1 (se encontrou o ID e atualizou con sucesso) ou 0 (se o ID nao existia).
                 return Banco.ExecutarComando(cmd);
-
             }
-        } // Fim Atualizar
+        }
 
-
-    } // Classe
-
-} // Namespace
+    }
+}
