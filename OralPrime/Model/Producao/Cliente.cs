@@ -185,16 +185,16 @@ namespace OralPrime.Model.Producao
                         // Extrai os dados da linha atual.
                         int id = reader.GetInt32("id");
 
-                        string nome = ValidarCampo(reader["Nome"]);
-                        string contato = ValidarCampo(reader["Contato"]);
-                        string ddd = ValidarCampo(reader["DDD"]);
-                        string telefone = ValidarCampo(reader["Telefone"]);
-                        string endereco = ValidarCampo(reader["Endereco"]);
-                        string bairro = ValidarCampo(reader["Bairro"]);
-                        string cidade = ValidarCampo(reader["Cidade"]);
-                        string estado = ValidarCampo(reader["Estado"]);
-                        string cep = ValidarCampo(reader["Cep"]);
-                        string email = ValidarCampo(reader["Email"]);
+                        string nome = ValidarCampoString(reader["Nome"]);
+                        string contato = ValidarCampoString(reader["Contato"]);
+                        string ddd = ValidarCampoString(reader["DDD"]);
+                        string telefone = ValidarCampoString(reader["Telefone"]);
+                        string endereco = ValidarCampoString(reader["Endereco"]);
+                        string bairro = ValidarCampoString(reader["Bairro"]);
+                        string cidade = ValidarCampoString(reader["Cidade"]);
+                        string estado = ValidarCampoString(reader["Estado"]);
+                        string cep = ValidarCampoString(reader["Cep"]);
+                        string email = ValidarCampoString(reader["Email"]);
 
 
                         // Cria o objeto Cliente con os dados extraidos
@@ -235,16 +235,16 @@ namespace OralPrime.Model.Producao
                     // Extrai os dados da linha atual.
                     int idListado = reader.GetInt32("id");
 
-                    string nome = ValidarCampo(reader["Nome"]);
-                    string contato = ValidarCampo(reader["Contato"]);
-                    string ddd = ValidarCampo(reader["DDD"]);
-                    string telefone = ValidarCampo(reader["Telefone"]);
-                    string endereco = ValidarCampo(reader["Endereco"]);
-                    string bairro = ValidarCampo(reader["Bairro"]);
-                    string cidade = ValidarCampo(reader["Cidade"]);
-                    string estado = ValidarCampo(reader["Estado"]);
-                    string cep = ValidarCampo(reader["Cep"]);
-                    string email = ValidarCampo(reader["Email"]);
+                    string nome = ValidarCampoString(reader["Nome"]);
+                    string contato = ValidarCampoString(reader["Contato"]);
+                    string ddd = ValidarCampoString(reader["DDD"]);
+                    string telefone = ValidarCampoString(reader["Telefone"]);
+                    string endereco = ValidarCampoString(reader["Endereco"]);
+                    string bairro = ValidarCampoString(reader["Bairro"]);
+                    string cidade = ValidarCampoString(reader["Cidade"]);
+                    string estado = ValidarCampoString(reader["Estado"]);
+                    string cep = ValidarCampoString(reader["Cep"]);
+                    string email = ValidarCampoString(reader["Email"]);
 
                     // Cria o objeto Cliente con os dados extraidos
                     cliente = new Cliente(idListado, nome, contato, ddd, telefone, endereco, bairro, cidade, estado, cep, email);
